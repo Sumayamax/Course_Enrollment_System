@@ -1,0 +1,88 @@
+# --- Maven ---
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# --- Java ---
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# --- Spring Boot ---
+.springBeans
+.sts4-cache
+
+# --- Logs ---
+logs/
+*.log
+spring.log
+
+# --- H2 database ---
+*.h2.db
+*.mv.db
+*.trace.db
+*.lock.db
+data/
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# --- VS Code ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/settings.json
+
+# --- Eclipse / STS (optional IDE) ---
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+bin/
+
+# --- NetBeans ---
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+application-local.properties
+application-local.yml
+application-local.yaml
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml
+
+# --- Misc build / tooling ---
+build/
+*.tmp
+*.bak
+*.swp
+*~
