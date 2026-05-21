@@ -3,11 +3,13 @@ package com.sumaya.course_enrollment_system.service;
 import com.sumaya.course_enrollment_system.dto.EnrollmentResponseDto;
 import com.sumaya.course_enrollment_system.entity.Course;
 import com.sumaya.course_enrollment_system.entity.Enrollment;
+import com.sumaya.course_enrollment_system.entity.EnrollmentDropHistory;
 import com.sumaya.course_enrollment_system.entity.User;
 import com.sumaya.course_enrollment_system.exception.CourseFullException;
 import com.sumaya.course_enrollment_system.exception.DuplicateEnrollmentException;
 import com.sumaya.course_enrollment_system.exception.EnrollmentNotFoundException;
 import com.sumaya.course_enrollment_system.mapper.EnrollmentMapper;
+import com.sumaya.course_enrollment_system.repository.EnrollmentDropHistoryRepository;
 import com.sumaya.course_enrollment_system.repository.EnrollmentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class EnrollmentService {
 
 	private final EnrollmentRepository enrollmentRepository;
+	private final EnrollmentDropHistoryRepository dropHistoryRepository;
 	private final CourseService courseService;
 	private final CurrentUserService currentUserService;
 	private final EnrollmentMapper enrollmentMapper;
@@ -62,6 +65,10 @@ public class EnrollmentService {
 		Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
 				.orElseThrow(() -> new EnrollmentNotFoundException(courseId));
 
+		dropHistoryRepository.save(EnrollmentDropHistory.builder()
+				.student(student)
+				.course(course)
+				.build());
 		enrollmentRepository.delete(enrollment);
 
 		log.info("Enrollment dropped enrollmentId={} studentEmail={} courseId={}",

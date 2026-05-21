@@ -3,6 +3,8 @@ package com.sumaya.course_enrollment_system.config;
 import com.sumaya.course_enrollment_system.api.ApiPaths;
 import com.sumaya.course_enrollment_system.security.CustomUserDetailsService;
 import com.sumaya.course_enrollment_system.security.JwtAuthenticationFilter;
+import com.sumaya.course_enrollment_system.security.RestAccessDeniedHandler;
+import com.sumaya.course_enrollment_system.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,12 +26,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final CustomUserDetailsService userDetailsService;
+	private final RestAuthenticationEntryPoint authenticationEntryPoint;
+	private final RestAccessDeniedHandler accessDeniedHandler;
 
 	@Bean
 	@Order(1)
@@ -49,21 +51,20 @@ public class SecurityConfig {
 	@Order(2)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+				.cors(cors -> {})
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.exceptionHandling(ex -> ex
+						.authenticationEntryPoint(authenticationEntryPoint)
+						.accessDeniedHandler(accessDeniedHandler))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(ApiPaths.AUTH_PATTERN).permitAll()
 						.requestMatchers(ApiPaths.H2_CONSOLE_PATTERN).permitAll()
-						.requestMatchers(HttpMethod.GET, ApiPaths.COURSES, ApiPaths.COURSES_PATTERN)
-								.permitAll()
-						.requestMatchers(HttpMethod.POST, ApiPaths.ADMIN_COURSES, ApiPaths.ADMIN_COURSES_PATTERN)
-								.hasRole("ADMIN")
-						.requestMatchers(HttpMethod.PUT, ApiPaths.ADMIN_COURSES, ApiPaths.ADMIN_COURSES_PATTERN)
-								.hasRole("ADMIN")
-						.requestMatchers(HttpMethod.DELETE, ApiPaths.ADMIN_COURSES, ApiPaths.ADMIN_COURSES_PATTERN)
-								.hasRole("ADMIN")
 						.requestMatchers(ApiPaths.ADMIN_PATTERN).hasRole("ADMIN")
-						.requestMatchers(ApiPaths.ENROLLMENTS_PATTERN).hasAnyRole("STUDENT", "ADMIN")
+						.requestMatchers(HttpMethod.GET, ApiPaths.COURSES, ApiPaths.COURSES_PATTERN)
+								.authenticated()
+						.requestMatchers(ApiPaths.ENROLLMENTS_PATTERN).authenticated()
+						.requestMatchers(ApiPaths.USERS_ME).authenticated()
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

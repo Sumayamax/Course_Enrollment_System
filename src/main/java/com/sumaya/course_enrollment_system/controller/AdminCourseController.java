@@ -5,6 +5,7 @@ import com.sumaya.course_enrollment_system.config.OpenApiConfig;
 import com.sumaya.course_enrollment_system.config.OpenApiExamples;
 import com.sumaya.course_enrollment_system.dto.CourseRequestDto;
 import com.sumaya.course_enrollment_system.dto.CourseResponseDto;
+import com.sumaya.course_enrollment_system.dto.EnrolledStudentDto;
 import com.sumaya.course_enrollment_system.dto.ErrorResponse;
 import com.sumaya.course_enrollment_system.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -108,5 +111,18 @@ public class AdminCourseController {
 			@PathVariable @Min(value = 1, message = "Course id must be positive") Long id) {
 		courseService.delete(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@Operation(summary = "List students enrolled in a course")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "Enrolled students returned"),
+			@ApiResponse(responseCode = "404", description = "Course not found", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+			@ApiResponse(responseCode = "403", description = "Not an ADMIN user")
+	})
+	@GetMapping("/{id}/students")
+	public ResponseEntity<List<EnrolledStudentDto>> listEnrolledStudents(
+			@Parameter(description = "Course ID", example = "1")
+			@PathVariable @Min(value = 1, message = "Course id must be positive") Long id) {
+		return ResponseEntity.ok(courseService.findEnrolledStudents(id));
 	}
 }

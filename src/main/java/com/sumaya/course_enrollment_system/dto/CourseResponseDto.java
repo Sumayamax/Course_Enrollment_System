@@ -27,4 +27,13 @@ public class CourseResponseDto {
 
 	@Schema(description = "Maximum enrollment capacity", example = "30")
 	private int capacity;
+
+	@Schema(description = "Current active enrollments", example = "12")
+	private long enrolledCount;
+
+	@Schema(description = "Seats still available", example = "18")
+	private long remainingCapacity;
+
+	@Schema(description = "Percentage of capacity filled", example = "40.0")
+	private double occupancyPercentage;
 }

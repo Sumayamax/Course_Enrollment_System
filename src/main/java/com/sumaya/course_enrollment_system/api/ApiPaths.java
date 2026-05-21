@@ -12,10 +12,14 @@ public final class ApiPaths {
 	public static final String ADMIN = API + "/admin";
 	public static final String ADMIN_COURSES = ADMIN + "/courses";
 	public static final String ADMIN_COURSES_PATTERN = ADMIN_COURSES + "/**";
+	public static final String ADMIN_STATISTICS = ADMIN + "/statistics";
 	public static final String ADMIN_PATTERN = ADMIN + "/**";
 
 	public static final String ENROLLMENTS = API + "/enrollments";
 	public static final String ENROLLMENTS_PATTERN = ENROLLMENTS + "/**";
+
+	public static final String USERS = API + "/users";
+	public static final String USERS_ME = USERS + "/me";
 
 	public static final String H2_CONSOLE = "/h2-console";
 	public static final String H2_CONSOLE_PATTERN = H2_CONSOLE + "/**";

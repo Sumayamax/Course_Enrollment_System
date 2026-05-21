@@ -92,6 +92,28 @@ public final class OpenApiExamples {
 			}
 			""";
 
+	public static final String ADMIN_STATISTICS_RESPONSE = """
+			{
+			  "totalStudents": 5,
+			  "totalCourses": 3,
+			  "totalEnrollments": 8,
+			  "topPopularCourses": [
+			    { "courseId": 1, "title": "Introduction to Spring Boot", "activeEnrollments": 4 }
+			  ],
+			  "highestDropoutCourse": { "courseId": 2, "title": "Database Design", "dropoutCount": 2 },
+			  "courseEnrollmentRates": [
+			    {
+			      "courseId": 1,
+			      "title": "Introduction to Spring Boot",
+			      "capacity": 30,
+			      "activeEnrollments": 4,
+			      "dropoutCount": 1,
+			      "enrollmentPercentage": 13.33
+			    }
+			  ]
+			}
+			""";
+
 	public static final String VALIDATION_ERROR_RESPONSE = """
 			{
 			  "timestamp": "2026-05-20T12:00:00",

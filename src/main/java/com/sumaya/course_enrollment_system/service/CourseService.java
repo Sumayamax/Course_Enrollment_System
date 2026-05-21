@@ -2,6 +2,7 @@ package com.sumaya.course_enrollment_system.service;
 
 import com.sumaya.course_enrollment_system.dto.CourseRequestDto;
 import com.sumaya.course_enrollment_system.dto.CourseResponseDto;
+import com.sumaya.course_enrollment_system.dto.EnrolledStudentDto;
 import com.sumaya.course_enrollment_system.dto.PagedResponseDto;
 import com.sumaya.course_enrollment_system.entity.Course;
 import com.sumaya.course_enrollment_system.exception.CourseHasEnrollmentsException;
@@ -10,6 +11,7 @@ import com.sumaya.course_enrollment_system.mapper.CourseMapper;
 import com.sumaya.course_enrollment_system.mapper.PageResponseMapper;
 import com.sumaya.course_enrollment_system.repository.CourseRepository;
 import com.sumaya.course_enrollment_system.repository.EnrollmentRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,6 +45,18 @@ public class CourseService {
 	public Course requireById(Long id) {
 		return courseRepository.findById(id)
 				.orElseThrow(() -> new CourseNotFoundException(id));
+	}
+
+	@Transactional(readOnly = true)
+	public List<EnrolledStudentDto> findEnrolledStudents(Long courseId) {
+		Course course = requireById(courseId);
+		return enrollmentRepository.findByCourse(course).stream()
+				.map(enrollment -> EnrolledStudentDto.builder()
+						.id(enrollment.getStudent().getId())
+						.name(enrollment.getStudent().getName())
+						.email(enrollment.getStudent().getEmail())
+						.build())
+				.toList();
 	}
 
 	@Transactional
